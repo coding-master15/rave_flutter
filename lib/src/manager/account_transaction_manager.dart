@@ -8,8 +8,8 @@ import 'package:rave_flutter/src/manager/base_transaction_manager.dart';
 
 class AccountTransactionManager extends BaseTransactionManager {
   AccountTransactionManager(
-      {@required BuildContext context,
-      @required TransactionComplete onTransactionComplete})
+      {required BuildContext context,
+      required TransactionComplete onTransactionComplete})
       : super(context: context, onTransactionComplete: onTransactionComplete);
 
   @override
@@ -17,7 +17,7 @@ class AccountTransactionManager extends BaseTransactionManager {
     setConnectionState(ConnectionState.waiting);
     try {
       var response = await service.charge(
-        ChargeRequestBody.fromPayload(payload: payload, type: "account"),
+        ChargeRequestBody.fromPayload(payload: payload!, type: "account"),
       );
       setConnectionState(ConnectionState.done);
 
@@ -30,9 +30,9 @@ class AccountTransactionManager extends BaseTransactionManager {
           showWebAuthorization(authUrl);
         } else {
           if (response.validateInstruction != null) {
-            onOtpRequested(response.validateInstruction);
+            onOtpRequested(response.validateInstruction!);
           } else if (response.validateInstructions != null) {
-            onOtpRequested(response.validateInstructions);
+            onOtpRequested(response.validateInstructions!);
           } else {
             onOtpRequested();
           }

@@ -30,8 +30,8 @@ class TransactionService {
       final response =
           await this._httpService.dio.post(_feeEndpoint, data: body.toJson());
       return FeeCheckResponseModel.fromJson(response.data);
-    } on DioError catch (e) {
-      throw RaveException(data: e?.response?.data);
+    } on DioException catch (e) {
+      throw RaveException(data: e.response?.data);
     } catch (e) {
       throw RaveException();
     }
@@ -44,8 +44,8 @@ class TransactionService {
           .dio
           .post(_chargeEndpoint, data: body.toJson());
       return ChargeResponseModel.fromJson(response.data);
-    } on DioError catch (e) {
-      throw RaveException(data: e?.response?.data);
+    } on DioException catch (e) {
+      throw RaveException(data: e.response?.data);
     } catch (e) {
       throw RaveException();
     }
@@ -59,8 +59,8 @@ class TransactionService {
           .dio
           .post(_validateChargeEndpoint, data: body.toJson());
       return ChargeResponseModel.fromJson(response.data);
-    } on DioError catch (e) {
-      throw RaveException(data: e?.response?.data);
+    } on DioException catch (e) {
+      throw RaveException(data: e.response?.data);
     } catch (e) {
       throw RaveException();
     }
@@ -71,8 +71,8 @@ class TransactionService {
       final response = await this._httpService.dio.post(_reQueryEndpoint,
           data: {"PBFPubKey": pBFPubKey, "flw_ref": flwRef});
       return ReQueryResponseModel.fromJson(response.data);
-    } on DioError catch (e) {
-      throw RaveException(data: e?.response?.data);
+    } on DioException catch (e) {
+      throw RaveException(data: e.response?.data);
     } catch (e) {
       throw RaveException();
     }

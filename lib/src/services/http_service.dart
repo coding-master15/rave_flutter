@@ -8,7 +8,7 @@ import 'package:rave_flutter/src/repository/repository.dart';
 class HttpService {
   static HttpService get instance => getIt<HttpService>();
 
-  Dio _dio;
+  late Dio _dio;
 
   Dio get dio => _dio;
 
@@ -18,8 +18,8 @@ class HttpService {
           ? "https://ravesandboxapi.flutterwave.com"
           : "https://api.ravepay.co",
       responseType: ResponseType.json,
-      connectTimeout: 60000,
-      receiveTimeout: 60000,
+      connectTimeout: Duration(seconds: 60),
+      receiveTimeout: Duration(seconds: 60),
       headers: {HttpHeaders.contentTypeHeader: "application/json"},
     );
     _dio = Dio(options);

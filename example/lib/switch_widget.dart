@@ -7,7 +7,7 @@ class SwitchWidget extends StatelessWidget {
   final ValueChanged<bool> onChanged;
 
   SwitchWidget(
-      {@required this.value, @required this.title, @required this.onChanged});
+      {required this.value, required this.title, required this.onChanged});
 
   @override
   Widget build(BuildContext context) => SwitchListTile.adaptive(

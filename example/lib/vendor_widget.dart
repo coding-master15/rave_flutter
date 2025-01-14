@@ -12,8 +12,8 @@ class _AddVendorWidgetState extends State<AddVendorWidget> {
   var refFocusNode = FocusNode();
   var ratioFocusNode = FocusNode();
   bool autoValidate = false;
-  String id;
-  String ratio;
+  String? id;
+  String? ratio;
 
   @override
   void dispose() {
@@ -27,7 +27,7 @@ class _AddVendorWidgetState extends State<AddVendorWidget> {
     return AlertDialog(
       content: Form(
         key: formKey,
-        autovalidate: autoValidate,
+        autovalidateMode: autoValidate ? AutovalidateMode.always : AutovalidateMode.disabled,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
@@ -44,7 +44,7 @@ class _AddVendorWidgetState extends State<AddVendorWidget> {
                 FocusScope.of(context).requestFocus(ratioFocusNode);
               },
               validator: (value) =>
-                  value.trim().isEmpty ? 'Field is required' : null,
+                  value!.trim().isEmpty ? 'Field is required' : null,
             ),
             SizedBox(
               height: 30,
@@ -59,25 +59,25 @@ class _AddVendorWidgetState extends State<AddVendorWidget> {
                 ratioFocusNode.unfocus();
                 validateInputs();
               },
-              inputFormatters: [WhitelistingTextInputFormatter.digitsOnly],
+              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
               validator: (value) =>
-                  value.trim().isEmpty ? 'Field is required' : null,
+                  value!.trim().isEmpty ? 'Field is required' : null,
             )
           ],
         ),
       ),
       actions: <Widget>[
-        FlatButton(
+        FilledButton(
             onPressed: () => Navigator.of(context).pop(),
             child: Text('CANCEL')),
-        FlatButton(onPressed: validateInputs, child: Text('ADD')),
+        FilledButton(onPressed: validateInputs, child: Text('ADD')),
       ],
     );
   }
 
   void validateInputs() {
     var formState = formKey.currentState;
-    if (formState.validate()) {
+    if (formState!.validate()) {
       formState.save();
       Navigator.of(context).pop(SubAccount(id, ratio));
     } else {

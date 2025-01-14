@@ -3,9 +3,9 @@ import 'package:rave_flutter/src/common/my_colors.dart';
 import 'package:rave_flutter/src/ui/fields/base_field.dart';
 
 class BillingWidget extends StatefulWidget {
-  final ValueChanged<Map<String, String>> onBillingInputted;
+  final ValueChanged<Map<String, String?>> onBillingInputted;
 
-  BillingWidget({@required this.onBillingInputted});
+  BillingWidget({required this.onBillingInputted});
 
   @override
   _BillingWidgetState createState() => _BillingWidgetState();
@@ -14,11 +14,11 @@ class BillingWidget extends StatefulWidget {
 class _BillingWidgetState extends State<BillingWidget> {
   var _formKey = GlobalKey<FormState>();
   var _autoValidate = false;
-  String address;
-  String city;
-  String state;
-  String zip;
-  String country;
+  String? address;
+  String? city;
+  String? state;
+  String? zip;
+  String? country;
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +26,7 @@ class _BillingWidgetState extends State<BillingWidget> {
       padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
       child: Form(
         key: _formKey,
-        autovalidate: _autoValidate,
+        autovalidateMode: _autoValidate ? AutovalidateMode.always : AutovalidateMode.disabled,
         child: Column(
           children: <Widget>[
             Text(
@@ -72,8 +72,11 @@ class _BillingWidgetState extends State<BillingWidget> {
             Container(
               width: double.infinity,
               margin: EdgeInsets.only(top: 20, bottom: 10),
-              child: FlatButton(
-                color: MyColors.buttercup,
+              child: TextButton(
+                style: TextButton.styleFrom(
+                  backgroundColor: MyColors.buttercup,
+                  padding: EdgeInsets.symmetric(vertical: 18, horizontal: 20),
+                ),
                 child: Text(
                   "Continue",
                   style: TextStyle(
@@ -81,7 +84,6 @@ class _BillingWidgetState extends State<BillingWidget> {
                       color: Colors.white,
                       fontSize: 15),
                 ),
-                padding: EdgeInsets.symmetric(vertical: 18, horizontal: 20),
                 onPressed: _validateInputs,
               ),
             )
@@ -92,7 +94,7 @@ class _BillingWidgetState extends State<BillingWidget> {
   }
 
   void _validateInputs() {
-    final FormState form = _formKey.currentState;
+    final FormState form = _formKey.currentState!;
     if (form.validate()) {
       FocusScope.of(context).requestFocus(FocusNode());
       form.save();
@@ -110,6 +112,6 @@ class _BillingWidgetState extends State<BillingWidget> {
     }
   }
 
-  String _validate(String value) =>
+  String? _validate(String? value) =>
       value == null || value.trim().isEmpty ? "Field is required" : null;
 }

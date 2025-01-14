@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(primarySwatch: Colors.blue, accentColor: Colors.pink),
+      theme: ThemeData(primarySwatch: Colors.blue, hintColor: Colors.pink),
       home: HomeWidget(),
     );
   }
@@ -42,17 +42,17 @@ class _HomeWidgetState extends State<HomeWidget> {
   bool preAuthCharge = false;
   bool addSubAccounts = false;
   List<SubAccount> subAccounts = [];
-  String email;
-  double amount;
+  String? email;
+  double? amount;
   String publicKey = "PASTE PUBLIC KEY HERE";
   String encryptionKey = "PASTE ENCRYPTION KEY HERE";
-  String txRef;
-  String orderRef;
-  String narration;
-  String currency;
-  String country;
-  String firstName;
-  String lastName;
+  String? txRef;
+  String? orderRef;
+  String? narration;
+  String? currency;
+  String? country;
+  String? firstName;
+  String? lastName;
 
   @override
   Widget build(BuildContext context) {
@@ -133,7 +133,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                       const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                   child: Form(
                     key: formKey,
-                    autovalidate: autoValidate,
+                    autovalidateMode: autoValidate ? AutovalidateMode.always : AutovalidateMode.disabled,
                     child: Column(
                       children: <Widget>[
                         TextFormField(
@@ -144,7 +144,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                         TextFormField(
                           decoration:
                               InputDecoration(hintText: 'Amount to charge'),
-                          onSaved: (value) => amount = double.tryParse(value),
+                          onSaved: (value) => amount = double.tryParse(value!),
                           keyboardType: TextInputType.number,
                         ),
                         SizedBox(height: 20),
@@ -154,7 +154,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                           initialValue:
                               "rave_flutter-${DateTime.now().toString()}",
                           validator: (value) =>
-                              value.trim().isEmpty ? 'Field is required' : null,
+                              value!.trim().isEmpty ? 'Field is required' : null,
                         ),
                         SizedBox(height: 20),
                         TextFormField(
@@ -163,7 +163,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                           initialValue:
                               "rave_flutter-${DateTime.now().toString()}",
                           validator: (value) =>
-                              value.trim().isEmpty ? 'Field is required' : null,
+                              value!.trim().isEmpty ? 'Field is required' : null,
                         ),
                         SizedBox(height: 20),
                         TextFormField(
@@ -271,12 +271,12 @@ class _HomeWidgetState extends State<HomeWidget> {
 
   void validateInputs() {
     var formState = formKey.currentState;
-    if (!formState.validate()) {
+    if (!formState!.validate()) {
       setState(() => autoValidate = true);
       return;
     }
 
-    formState.save();
+    formState!.save();
     startPayment();
   }
 
@@ -287,8 +287,8 @@ class _HomeWidgetState extends State<HomeWidget> {
         encryptionKey: encryptionKey,
         subAccounts: subAccounts.isEmpty ? null : null)
       ..country =
-          country = country != null && country.isNotEmpty ? country : "NG"
-      ..currency = currency != null && currency.isNotEmpty ? currency : "NGN"
+          (country = country != null && country!.isNotEmpty ? country : "NG")!
+      ..currency = (currency != null && currency!.isNotEmpty ? currency : "NGN")!
       ..email = email
       ..fName = firstName
       ..lName = lastName
@@ -311,7 +311,6 @@ class _HomeWidgetState extends State<HomeWidget> {
     var response = await RavePayManager()
         .prompt(context: context, initializer: initializer);
     print(response);
-    scaffoldKey.currentState
-        .showSnackBar(SnackBar(content: Text(response?.message)));
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(response.message!)));
   }
 }

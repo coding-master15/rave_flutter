@@ -9,7 +9,7 @@ import 'package:rave_flutter/src/ui/payment/pages/base_payment_page.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class CardPaymentWidget extends BasePaymentPage {
-  CardPaymentWidget({@required CardTransactionManager manager})
+  CardPaymentWidget({required CardTransactionManager manager})
       : super(transactionManager: manager);
 
   @override
@@ -17,7 +17,7 @@ class CardPaymentWidget extends BasePaymentPage {
 }
 
 class _CardPaymentWidgetState extends BasePaymentPageState<CardPaymentWidget> {
-  TextEditingController numberController;
+  late TextEditingController numberController;
   CardType cardType = CardType.unknown;
   var _numberFocusNode = FocusNode();
   var _expiryFocusNode = FocusNode();
@@ -46,7 +46,7 @@ class _CardPaymentWidgetState extends BasePaymentPageState<CardPaymentWidget> {
         textInputAction: TextInputAction.next,
         onFieldSubmitted: (value) =>
             swapFocus(_numberFocusNode, _expiryFocusNode),
-        onSaved: (value) => payload.cardNo = CardUtils.getCleanedNumber(value),
+        onSaved: (value) => payload!.cardNo = CardUtils.getCleanedNumber(value),
         suffix: SvgPicture.asset(
           'assets/images/${CardUtils.getCardIcon(cardType)}.svg',
           package: 'rave_flutter',
@@ -64,9 +64,9 @@ class _CardPaymentWidgetState extends BasePaymentPageState<CardPaymentWidget> {
               onFieldSubmitted: (value) =>
                   swapFocus(_expiryFocusNode, _cvvFocusNode),
               onSaved: (value) {
-                List<String> expiryDate = CardUtils.getExpiryDate(value);
-                payload.expiryMonth = expiryDate[0];
-                payload.expiryYear = expiryDate[1];
+                List<String> expiryDate = CardUtils.getExpiryDate(value!);
+                payload!.expiryMonth = expiryDate[0];
+                payload!.expiryYear = expiryDate[1];
               },
             ),
           ),
@@ -77,7 +77,7 @@ class _CardPaymentWidgetState extends BasePaymentPageState<CardPaymentWidget> {
                 onFieldSubmitted: (value) => swapFocus(
                       _cvvFocusNode,
                     ),
-                onSaved: (value) => payload.cvv = value),
+                onSaved: (value) => payload!.cvv = value),
           ),
         ],
       )

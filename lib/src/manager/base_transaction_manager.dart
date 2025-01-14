@@ -25,15 +25,15 @@ abstract class BaseTransactionManager {
   final RavePayInitializer initializer = Repository.instance.initializer;
   final transactionBloc = TransactionBloc.instance;
   final connectionBloc = ConnectionBloc.instance;
-  Payload payload;
-  String flwRef;
+  Payload? payload;
+  String? flwRef;
 
   BaseTransactionManager(
-      {@required this.context, @required this.onTransactionComplete});
+      {required this.context, required this.onTransactionComplete});
 
   processTransaction(Payload payload) {
     this.payload = payload;
-    if (initializer.displayFee) {
+    if (initializer.displayFee!) {
       fetchFee();
     } else {
       charge();
@@ -46,7 +46,7 @@ abstract class BaseTransactionManager {
     setConnectionState(ConnectionState.waiting);
     try {
       var response =
-          await service.fetchFee(FeeCheckRequestBody.fromPayload(payload));
+          await service.fetchFee(FeeCheckRequestBody.fromPayload(payload!));
       setConnectionState(ConnectionState.done);
       displayFeeDialog(response);
     } on RaveException catch (e) {
@@ -54,11 +54,11 @@ abstract class BaseTransactionManager {
     }
   }
 
-  reQueryTransaction({ValueChanged<ReQueryResponseModel> onComplete}) async {
+  reQueryTransaction({ValueChanged<ReQueryResponseModel>? onComplete}) async {
     onComplete ??= this.onComplete;
     setConnectionState(ConnectionState.waiting);
     try {
-      var response = await service.reQuery(payload.pbfPubKey, flwRef);
+      var response = await service.reQuery(payload!.pbfPubKey!, flwRef);
       onComplete(response);
     } on RaveException catch (e) {
       handleError(e: e);
@@ -79,7 +79,7 @@ abstract class BaseTransactionManager {
       MaterialPageRoute(
           builder: (_) => WebViewWidget(
                 authUrl: cleanUrl(authUrl),
-                callbackUrl: cleanUrl(payload.redirectUrl),
+                callbackUrl: cleanUrl(payload!.redirectUrl!),
               ),
           fullscreenDialog: true),
     );
@@ -92,7 +92,7 @@ abstract class BaseTransactionManager {
       var response = await service.validateCardCharge(ValidateChargeRequestBody(
           transactionReference: flwRef,
           otp: otp,
-          pBFPubKey: payload.pbfPubKey));
+          pBFPubKey: payload!.pbfPubKey));
       setConnectionState(ConnectionState.done);
 
       var status = response.status;
@@ -149,8 +149,8 @@ abstract class BaseTransactionManager {
       child = AlertDialog(
         content: content,
         actions: <Widget>[
-          FlatButton(onPressed: closeDialog, child: Text('NO')),
-          FlatButton(onPressed: charge, child: Text('YES'))
+          TextButton(onPressed: closeDialog, child: Text('NO')),
+          TextButton(onPressed: charge, child: Text('YES'))
         ],
       );
     }
@@ -159,7 +159,7 @@ abstract class BaseTransactionManager {
   }
 
   @mustCallSuper
-  handleError({@required RaveException e, Map rawResponse}) {
+  handleError({required RaveException e, Map? rawResponse}) {
     setConnectionState(ConnectionState.done);
     onTransactionComplete(RaveResult(
         status: RaveStatus.error,
@@ -171,7 +171,7 @@ abstract class BaseTransactionManager {
   onComplete(ReQueryResponseModel response) {
     setConnectionState(ConnectionState.done);
     onTransactionComplete(RaveResult(
-        status: response.dataStatus.toLowerCase() == "successful"
+        status: response.dataStatus?.toLowerCase() == "successful"
             ? RaveStatus.success
             : RaveStatus.error,
         rawResponse: response.rawResponse,

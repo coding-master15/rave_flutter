@@ -19,8 +19,8 @@ class RavePayManager {
   @Deprecated(
       "'initilize' doesn't properly communicate the purpose of this function. Use the `prompt` function. Will be removed in version 1.0.0")
   Future<RaveResult> initialize({
-    @required BuildContext context,
-    @required RavePayInitializer initializer,
+    required BuildContext context,
+    required RavePayInitializer initializer,
   }) async {
     return prompt(context: context, initializer: initializer);
   }
@@ -37,11 +37,9 @@ class RavePayManager {
   /// Please, enable embedded_views_preview on iOS. See https://stackoverflow.com/a/55290868/6181476
   ///  {@endtemplate}
   Future<RaveResult> prompt({
-    @required BuildContext context,
-    @required RavePayInitializer initializer,
+    required BuildContext context,
+    required RavePayInitializer initializer,
   }) async {
-    assert(context != null);
-    assert(initializer != null);
 
     // Validate the initializer params
     var error = ValidatorUtils.validateInitializer(initializer);
@@ -54,7 +52,7 @@ class RavePayManager {
 
     Repository.bootStrap(initializer);
 
-    var result = showDialog<RaveResult>(
+    RaveResult? result = await showDialog<RaveResult>(
       context: context,
       barrierDismissible: false,
       builder: (_) => Theme(
@@ -71,7 +69,7 @@ class RavePayManager {
     // Primary and accent colors are from Flutterwave's logo color
     return Theme.of(context).copyWith(
       primaryColor: Colors.black,
-      accentColor: MyColors.buttercup,
+      hintColor: MyColors.buttercup,
       buttonTheme: Theme.of(context).buttonTheme.copyWith(
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(5))),

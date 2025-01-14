@@ -8,8 +8,8 @@ import 'package:rave_flutter/src/manager/base_transaction_manager.dart';
 
 class AchTransactionManager extends BaseTransactionManager {
   AchTransactionManager(
-      {@required BuildContext context,
-      @required TransactionComplete onTransactionComplete})
+      {required BuildContext context,
+      required TransactionComplete onTransactionComplete})
       : super(
           context: context,
           onTransactionComplete: onTransactionComplete,
@@ -21,7 +21,7 @@ class AchTransactionManager extends BaseTransactionManager {
     try {
       var response = await service.charge(
         ChargeRequestBody.fromPayload(
-            payload: payload..isUsBankCharge = true, type: "account"),
+            payload: payload!..isUsBankCharge = true, type: "account"),
       );
       setConnectionState(ConnectionState.done);
 

@@ -6,9 +6,9 @@ class ConnectionBloc {
   static ConnectionBloc get instance => getIt<ConnectionBloc>();
   final _controller = StreamController<ConnectionState>.broadcast();
 
-  Stream<ConnectionState> _stream;
+  Stream<ConnectionState>? _stream;
 
-  Stream<ConnectionState> get stream => _stream;
+  Stream<ConnectionState>? get stream => _stream;
 
   ConnectionBloc._() {
     _stream = _controller.stream;

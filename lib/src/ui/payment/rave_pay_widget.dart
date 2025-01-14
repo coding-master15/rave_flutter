@@ -38,13 +38,13 @@ class RavePayWidget extends StatefulWidget {
 class _RavePayWidgetState extends BaseState<RavePayWidget>
     with TickerProviderStateMixin {
   final RavePayInitializer _initializer = Repository.instance.initializer;
-  AnimationController _animationController;
-  Animation _animation;
+  late AnimationController _animationController;
+  late Animation<double> _animation;
   var _slideUpTween = Tween<Offset>(begin: Offset(0, 0.4), end: Offset.zero);
   var _slideRightTween =
       Tween<Offset>(begin: Offset(-0.4, 0), end: Offset.zero);
-  int _selectedIndex;
-  List<_Item> _items;
+  int? _selectedIndex;
+  late List<_Item> _items;
 
   @override
   void initState() {
@@ -84,7 +84,6 @@ class _RavePayWidgetState extends BaseState<RavePayWidget>
         duration: Duration(milliseconds: 400),
         curve: Curves.fastOutSlowIn,
         alignment: Alignment.topCenter,
-        vsync: this,
         child: StreamBuilder<TransactionState>(
           stream: TransactionBloc.instance.stream,
           builder: (_, snapshot) {
@@ -93,7 +92,7 @@ class _RavePayWidgetState extends BaseState<RavePayWidget>
             if (!snapshot.hasData) {
               w = column;
             } else {
-              switch (transactionState.state) {
+              switch (transactionState!.state) {
                 case State.initial:
                   w = column;
                   break;
@@ -110,7 +109,7 @@ class _RavePayWidgetState extends BaseState<RavePayWidget>
                   break;
                 case State.avsSecure:
                   w = BillingWidget(
-                      onBillingInputted: transactionState.callback);
+                      onBillingInputted: transactionState.callback!);
               }
             }
             return w;
@@ -127,7 +126,6 @@ class _RavePayWidgetState extends BaseState<RavePayWidget>
       },
     );
     child = AnimatedSize(
-      vsync: this,
       duration: Duration(milliseconds: 400),
       curve: Curves.linear,
       child: FadeTransition(
@@ -157,9 +155,9 @@ class _RavePayWidgetState extends BaseState<RavePayWidget>
   }
 
   Widget _buildHeader() {
-    var displayEmail = _initializer.displayEmail && _initializer.email != null;
-    var displayAmount = _initializer.displayAmount &&
-        (_initializer.amount != null || !_initializer.amount.isNegative);
+    var displayEmail = _initializer.displayEmail! && _initializer.email != null;
+    var displayAmount = _initializer.displayAmount! &&
+        (_initializer.amount != null || !_initializer.amount!.isNegative);
 
     var rightWidget = displayEmail || displayAmount
         ? Column(
@@ -167,7 +165,7 @@ class _RavePayWidgetState extends BaseState<RavePayWidget>
             children: <Widget>[
               if (displayEmail)
                 Text(
-                  _initializer.email,
+                  _initializer.email!,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(color: Colors.grey[700], fontSize: 12.0),
@@ -236,7 +234,6 @@ class _RavePayWidgetState extends BaseState<RavePayWidget>
                           ? rightWidget ?? rightText
                           : rightText,
                     ),
-                    vsync: this,
                     duration: Duration(milliseconds: 800)),
               ],
             ),
@@ -291,7 +288,7 @@ class _RavePayWidgetState extends BaseState<RavePayWidget>
 
   List<_Item> _getItems() {
     var items = <_Item>[];
-    if (_initializer.acceptCardPayments) {
+    if (_initializer.acceptCardPayments!) {
       items.add(
         _Item(
           Strings.card,
@@ -306,7 +303,7 @@ class _RavePayWidgetState extends BaseState<RavePayWidget>
       );
     }
 
-    if (_initializer.acceptAccountPayments) {
+    if (_initializer.acceptAccountPayments!) {
       if (_initializer.country.toUpperCase() == Strings.us &&
           _initializer.currency.toUpperCase() == Strings.usd) {
         items.add(_Item(
@@ -333,7 +330,7 @@ class _RavePayWidgetState extends BaseState<RavePayWidget>
       }
     }
 
-    if (_initializer.acceptMpesaPayments) {
+    if (_initializer.acceptMpesaPayments!) {
       items.add(
         _Item(
           Strings.mpesa,
@@ -347,7 +344,7 @@ class _RavePayWidgetState extends BaseState<RavePayWidget>
       );
     }
 
-    if (_initializer.acceptGHMobileMoneyPayments) {
+    if (_initializer.acceptGHMobileMoneyPayments!) {
       items.add(
         _Item(
           Strings.ghanaMobileMoney,
@@ -361,7 +358,7 @@ class _RavePayWidgetState extends BaseState<RavePayWidget>
       );
     }
 
-    if (_initializer.acceptUgMobileMoneyPayments) {
+    if (_initializer.acceptUgMobileMoneyPayments!) {
       items.add(
         _Item(
           Strings.ugandaMobileMoney,
@@ -375,7 +372,7 @@ class _RavePayWidgetState extends BaseState<RavePayWidget>
       );
     }
 
-    if (_initializer.acceptMobileMoneyFrancophoneAfricaPayments) {
+    if (_initializer.acceptMobileMoneyFrancophoneAfricaPayments!) {
       items.add(
         _Item(
           Strings.mobileMoneyFrancophoneAfrica,
@@ -397,8 +394,13 @@ class _RavePayWidgetState extends BaseState<RavePayWidget>
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(border: Border(top: border, bottom: border)),
-      child: FlatButton(
-        color: Colors.grey[100],
+      child: FilledButton(
+        style: FilledButton.styleFrom(
+          backgroundColor: Colors.grey[100],
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(0))),
+          padding: EdgeInsets.symmetric(vertical: 17, horizontal: 20),
+        ),
         child: Row(
           children: <Widget>[
             SvgPicture.asset(
@@ -412,9 +414,6 @@ class _RavePayWidgetState extends BaseState<RavePayWidget>
             Flexible(child: Text('Pay with ${item.title}')),
           ],
         ),
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(0))),
-        padding: EdgeInsets.symmetric(vertical: 17, horizontal: 20),
         onPressed: () {
           setState(() {
             _selectedIndex = index;

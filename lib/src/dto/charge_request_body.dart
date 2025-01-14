@@ -7,9 +7,9 @@ import 'package:rave_flutter/src/dto/payload.dart';
 import 'package:rave_flutter/src/repository/repository.dart';
 
 class ChargeRequestBody extends Equatable {
-  final String pBFPubKey;
-  final String client;
-  final String alg;
+  final String? pBFPubKey;
+  final String? client;
+  final String? alg;
 
   ChargeRequestBody({
     this.pBFPubKey,
@@ -17,7 +17,7 @@ class ChargeRequestBody extends Equatable {
     this.alg,
   });
 
-  ChargeRequestBody.fromPayload({@required Payload payload, String type})
+  ChargeRequestBody.fromPayload({required Payload payload, String? type})
       : this.pBFPubKey = payload.pbfPubKey,
         this.alg = "3DES-24",
         this.client = getEncryptedData(json.encode(payload.toJson(type)),
@@ -30,5 +30,5 @@ class ChargeRequestBody extends Equatable {
       };
 
   @override
-  List<Object> get props => [pBFPubKey, client, alg];
+  List<Object> get props => [pBFPubKey!, client!, alg!];
 }
