@@ -20,7 +20,7 @@ dependencies:
   tripledes:
     git:
       url: https://github.com/coding-master15/tripledes-dart
-      ref: b4a4a761ad89c0d709aa2a2d31693ffcb6db8e00
+      ref: 62828ab078c500e10524d5e31898c3a25be6c8f8
   webview_flutter: ^4.10.0
 
 
